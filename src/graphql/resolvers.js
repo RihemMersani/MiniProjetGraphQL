@@ -58,6 +58,24 @@ const resolvers = {
         });
       });
     },
+
+    trafficZones: async () => {
+      return new Promise((resolve, reject) => {
+        db.query("SELECT * FROM traffic_zones", (error, results) => {
+          if (error) reject(error);
+          else resolve(results);
+        });
+      });
+    },
+
+    notifications: async () => {
+      return new Promise((resolve, reject) => {
+        db.query("SELECT * FROM notifications", (error, results) => {
+          if (error) reject(error);
+          else resolve(results);
+        });
+      });
+    },
   },
 
   Mutation: {
@@ -113,7 +131,10 @@ const resolvers = {
             { expiresIn: "1h" }
           );
 
-          resolve({ token, user });
+          resolve({
+            token,
+            user,
+          });
         });
       });
     },
@@ -179,6 +200,61 @@ const resolvers = {
         db.query(sql, [status, id], (error) => {
           if (error) reject(error);
           else resolve("Statut de l'incident mis à jour");
+        });
+      });
+    },
+
+    addTrafficZone: async (_, args) => {
+      const { name, location, density } = args;
+
+      let level = "FAIBLE";
+
+      if (density > 70) {
+        level = "ELEVE";
+      } else if (density > 30) {
+        level = "MOYEN";
+      }
+
+      return new Promise((resolve, reject) => {
+        const sql = `
+          INSERT INTO traffic_zones(name, location, density, level)
+          VALUES (?, ?, ?, ?)
+        `;
+
+        db.query(sql, [name, location, density, level], (error) => {
+          if (error) reject(error);
+          else resolve("Zone de trafic ajoutée avec succès");
+        });
+      });
+    },
+
+    addNotification: async (_, args) => {
+      const { user_id, message } = args;
+
+      return new Promise((resolve, reject) => {
+        const sql = `
+          INSERT INTO notifications(user_id, message)
+          VALUES (?, ?)
+        `;
+
+        db.query(sql, [user_id, message], (error) => {
+          if (error) reject(error);
+          else resolve("Notification envoyée");
+        });
+      });
+    },
+
+    markNotificationAsRead: async (_, args) => {
+      return new Promise((resolve, reject) => {
+        const sql = `
+          UPDATE notifications
+          SET is_read = true
+          WHERE id = ?
+        `;
+
+        db.query(sql, [args.id], (error) => {
+          if (error) reject(error);
+          else resolve("Notification marquée comme lue");
         });
       });
     },

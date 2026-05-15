@@ -35,6 +35,23 @@ const typeDefs = gql`
     created_at: String
   }
 
+  type TrafficZone {
+    id: ID
+    name: String
+    location: String
+    density: Int
+    level: String
+    created_at: String
+  }
+
+  type Notification {
+    id: ID
+    user_id: ID
+    message: String
+    is_read: Boolean
+    created_at: String
+  }
+
   type AuthPayload {
     token: String
     user: User
@@ -43,16 +60,30 @@ const typeDefs = gql`
   type Query {
     hello: String
     users: [User]
+
     vehicles: [Vehicle]
     vehicle(id: ID!): Vehicle
     vehiclePositions(vehicle_id: ID!): [VehiclePosition]
+
     incidents: [Incident]
+
+    trafficZones: [TrafficZone]
+
+    notifications: [Notification]
   }
 
   type Mutation {
-    register(name: String!, email: String!, password: String!, role: String): String
+    register(
+      name: String!
+      email: String!
+      password: String!
+      role: String
+    ): String
 
-    login(email: String!, password: String!): AuthPayload
+    login(
+      email: String!
+      password: String!
+    ): AuthPayload
 
     addVehicle(
       matricule: String!
@@ -77,6 +108,21 @@ const typeDefs = gql`
     updateIncidentStatus(
       id: ID!
       status: String!
+    ): String
+
+    addTrafficZone(
+      name: String!
+      location: String!
+      density: Int!
+    ): String
+
+    addNotification(
+      user_id: ID!
+      message: String!
+    ): String
+
+    markNotificationAsRead(
+      id: ID!
     ): String
   }
 `;
