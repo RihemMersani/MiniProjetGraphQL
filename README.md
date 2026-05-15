@@ -68,33 +68,7 @@ dotenv
 Base de données
 MySQL
 mysql2
-📂 Architecture du projet
-TrafficPro/
-│
-├── backend/
-│   ├── config/
-│   ├── graphql/
-│   │   ├── resolvers.js
-│   │   └── typeDefs.js
-│   ├── server.js
-│   ├── package.json
-│   └── .env
-│
-├── frontend/
-│   ├── src/
-│   │   ├── layouts/
-│   │   ├── pages/
-│   │   │   ├── admin/
-│   │   │   ├── operator/
-│   │   │   ├── Home.jsx
-│   │   │   ├── Login.jsx
-│   │   │   └── Register.jsx
-│   │   ├── components/
-│   │   ├── App.jsx
-│   │   └── styles.css
-│   │
-│   ├── package.json
-│   └── vite.config.js
+
 ⚙️ Installation du projet
 1️⃣ Cloner le projet
 git clone https://github.com/username/trafficpro.git
