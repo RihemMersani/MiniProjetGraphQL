@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 import { Link } from "react-router-dom";
+import Layout from "../../layouts/Layout";
 
 const GET_DATA = gql`
   query {

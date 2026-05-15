@@ -1,25 +1,58 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-function SimplePage({ title }) {
-  return (
-    <div className="page-placeholder">
-      <h1>{title}</h1>
-      <p>Page {title} en cours de développement.</p>
-    </div>
-  );
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+
+import Dashboard from "./pages/admin/Dashboard";
+import Users from "./pages/admin/Users";
+import Vehicles from "./pages/admin/Vehicles";
+import Traffic from "./pages/admin/Traffic";
+import Incidents from "./pages/admin/Incidents";
+import Notifications from "./pages/admin/Notifications";
+import MapPage from "./pages/admin/MapPage";
+
+import OperatorDashboard from "./pages/operator/OperatorDashboard";
+import OperatorVehicles from "./pages/operator/OperatorVehicles";
+import OperatorTraffic from "./pages/operator/OperatorTraffic";
+import OperatorIncidents from "./pages/operator/OperatorIncidents";
+import OperatorNotifications from "./pages/operator/OperatorNotifications";
+import OperatorMap from "./pages/operator/OperatorMap";
+
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return <Navigate to="/login" />;
+  }
+
+  return children;
 }
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/users" element={<SimplePage title="Utilisateurs" />} />
-        <Route path="/vehicles" element={<SimplePage title="Véhicules" />} />
-        <Route path="/traffic" element={<SimplePage title="Trafic" />} />
-        <Route path="/incidents" element={<SimplePage title="Incidents" />} />
-        <Route path="/notifications" element={<SimplePage title="Notifications" />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* ADMIN */}
+        <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
+        <Route path="/vehicles" element={<ProtectedRoute><Vehicles /></ProtectedRoute>} />
+        <Route path="/traffic" element={<ProtectedRoute><Traffic /></ProtectedRoute>} />
+        <Route path="/incidents" element={<ProtectedRoute><Incidents /></ProtectedRoute>} />
+        <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+        <Route path="/map" element={<ProtectedRoute><MapPage /></ProtectedRoute>} />
+
+        {/* OPERATOR */}
+        <Route path="/operator" element={<ProtectedRoute><OperatorDashboard /></ProtectedRoute>} />
+        <Route path="/operator/vehicles" element={<ProtectedRoute><OperatorVehicles /></ProtectedRoute>} />
+        <Route path="/operator/traffic" element={<ProtectedRoute><OperatorTraffic /></ProtectedRoute>} />
+        <Route path="/operator/incidents" element={<ProtectedRoute><OperatorIncidents /></ProtectedRoute>} />
+        <Route path="/operator/notifications" element={<ProtectedRoute><OperatorNotifications /></ProtectedRoute>} />
+        <Route path="/operator/map" element={<ProtectedRoute><OperatorMap /></ProtectedRoute>} />
+
+        <Route path="*" element={<Navigate to="/home" />} />
       </Routes>
     </BrowserRouter>
   );
