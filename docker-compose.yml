@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: traffic_backend
+
+    ports:
+      - "4000:4000"
+
+    depends_on:
+      - mysql
+
+    environment:
+      PORT: 4000
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: traffic_management
+      JWT_SECRET: secret_key_traffic_project
+
+  mysql:
+    image: mysql:8.0
+
+    container_name: traffic_mysql
+
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: traffic_management
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
