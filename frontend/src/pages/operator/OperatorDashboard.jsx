@@ -1,6 +1,8 @@
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
+
 import OperatorLayout from "../../layouts/OperatorLayout";
+import RealtimeNotifications from "../../components/RealtimeNotifications";
 
 const GET_DATA = gql`
   query {
@@ -17,8 +19,13 @@ const GET_DATA = gql`
 function OperatorDashboard() {
   const { loading, error, data } = useQuery(GET_DATA);
 
-  if (loading) return <div className="loading">Chargement...</div>;
-  if (error) return <div className="error">Erreur : {error.message}</div>;
+  if (loading) {
+    return <div className="loading">Chargement...</div>;
+  }
+
+  if (error) {
+    return <div className="error">Erreur : {error.message}</div>;
+  }
 
   return (
     <OperatorLayout
@@ -29,7 +36,7 @@ function OperatorDashboard() {
         <div className="card">
           <span>Véhicules suivis</span>
           <h3>{data.vehicles.length}</h3>
-          <p>Consultation seulement</p>
+          <p>Ajout et consultation</p>
         </div>
 
         <div className="card">
@@ -46,18 +53,20 @@ function OperatorDashboard() {
 
         <div className="card">
           <span>Notifications</span>
-          <h3>3</h3>
-          <p>Alertes récentes</p>
+          <h3>Live</h3>
+          <p>Temps réel activé</p>
         </div>
       </section>
 
       <div className="box">
         <h2>Mission de l’opérateur</h2>
         <p>
-          L’opérateur peut consulter les véhicules, suivre l’état du trafic,
-          consulter les incidents et recevoir les notifications.
+          L’opérateur peut ajouter des véhicules, consulter le trafic,
+          déclarer des incidents et recevoir les notifications en temps réel.
         </p>
       </div>
+
+      <RealtimeNotifications />
     </OperatorLayout>
   );
 }

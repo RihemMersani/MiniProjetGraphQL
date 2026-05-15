@@ -13,10 +13,14 @@ a {
   text-decoration: none;
 }
 
+/* APP */
+
 .app {
   display: flex;
   min-height: 100vh;
 }
+
+/* SIDEBAR */
 
 .sidebar {
   width: 250px;
@@ -55,10 +59,14 @@ a {
   color: white;
 }
 
+/* MAIN */
+
 .main {
   flex: 1;
   padding: 30px;
 }
+
+/* HEADER */
 
 .header {
   display: flex;
@@ -85,7 +93,14 @@ a {
   border-radius: 12px;
   cursor: pointer;
   font-size: 15px;
+  transition: 0.3s;
 }
+
+.header button:hover {
+  background: #1d4ed8;
+}
+
+/* USER AREA */
 
 .user-area {
   display: flex;
@@ -98,6 +113,8 @@ a {
   color: #1f2937;
 }
 
+/* CARDS */
+
 .cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -108,7 +125,8 @@ a {
 .card,
 .box,
 .feature,
-.hero-card {
+.hero-card,
+.realtime-box {
   background: white;
   padding: 25px;
   border-radius: 18px;
@@ -131,16 +149,21 @@ a {
   color: #6b7280;
 }
 
+/* CONTENT */
+
 .content {
   display: grid;
   grid-template-columns: 1fr;
   gap: 25px;
 }
 
-.box h2 {
+.box h2,
+.realtime-box h3 {
   margin-top: 0;
   margin-bottom: 20px;
 }
+
+/* TABLE */
 
 table {
   width: 100%;
@@ -152,12 +175,16 @@ th {
   color: #6b7280;
   padding: 14px;
   border-bottom: 1px solid #e5e7eb;
+  font-size: 15px;
 }
 
 td {
   padding: 14px;
   border-bottom: 1px solid #e5e7eb;
+  font-size: 15px;
 }
+
+/* BADGES */
 
 .badge {
   background: #dbeafe;
@@ -177,6 +204,8 @@ td {
   background: #fee2e2;
   color: #b91c1c;
 }
+
+/* NOTIFICATIONS */
 
 .notification {
   background: #f9fafb;
@@ -198,6 +227,31 @@ td {
 .notification.unread {
   background: #eff6ff;
 }
+
+/* REALTIME */
+
+.realtime-notification {
+  background: #eff6ff;
+  border-left: 5px solid #2563eb;
+  padding: 14px;
+  border-radius: 12px;
+  margin-top: 12px;
+}
+
+.realtime-notification strong {
+  color: #1d4ed8;
+}
+
+.realtime-notification p {
+  margin: 6px 0 0;
+  color: #6b7280;
+}
+
+.empty-message {
+  color: #6b7280;
+}
+
+/* LOGIN */
 
 .login-page {
   min-height: 100vh;
@@ -255,6 +309,8 @@ td {
   font-size: 14px;
 }
 
+/* FORM */
+
 .form {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -280,6 +336,12 @@ td {
   font-size: 15px;
 }
 
+.form button:hover {
+  background: #1d4ed8;
+}
+
+/* INFO */
+
 .info-text {
   margin-top: 20px;
   color: #6b7280;
@@ -288,6 +350,8 @@ td {
   border-radius: 12px;
   border-left: 4px solid #2563eb;
 }
+
+/* STATES */
 
 .loading,
 .error {
@@ -423,6 +487,8 @@ td {
   overflow: hidden;
   z-index: 1;
 }
+
+/* RESPONSIVE */
 
 @media (max-width: 1100px) {
   .cards,
