@@ -1,5 +1,6 @@
 const express = require("express");
 const http = require("http");
+const jwt = require("jsonwebtoken");
 const { ApolloServer } = require("apollo-server-express");
 const { Server } = require("socket.io");
 const cors = require("cors");
@@ -17,6 +18,16 @@ app.use(express.json());
 
 const httpServer = http.createServer(app);
 
+function verifyToken(token) {
+  if (!token) return null;
+
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch {
+    return null;
+  }
+}
+
 const io = new Server(httpServer, {
   cors: {
     origin: "http://localhost:5173",
@@ -25,37 +36,47 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log("Client connecté WebSocket :", socket.id);
+  const token = socket.handshake.auth?.token;
+  const user = verifyToken(token);
 
-  socket.emit("notification", {
-    title: "Connexion temps réel",
-    message: "WebSocket connecté avec succès.",
-  });
+  if (user) {
+    socket.join(`user_${user.id}`);
+    console.log(`Utilisateur ${user.id} connecté WebSocket`);
+  }
 
   socket.on("disconnect", () => {
     console.log("Client déconnecté WebSocket :", socket.id);
   });
 });
 
+function getUserFromToken(req) {
+  const authHeader = req.headers.authorization || "";
+  const token = authHeader.replace("Bearer ", "");
+
+  return verifyToken(token);
+}
+
 async function startServer() {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: () => ({
-      io,
-    }),
+    context: ({ req }) => {
+      const user = getUserFromToken(req);
+
+      return {
+        io,
+        user,
+      };
+    },
   });
 
   await server.start();
-
   server.applyMiddleware({ app });
 
   const PORT = process.env.PORT || 4000;
 
   httpServer.listen(PORT, () => {
-    console.log(
-      `Serveur lancé sur http://localhost:${PORT}${server.graphqlPath}`
-    );
+    console.log(`Serveur lancé sur http://localhost:${PORT}${server.graphqlPath}`);
     console.log(`WebSocket lancé sur http://localhost:${PORT}`);
   });
 }

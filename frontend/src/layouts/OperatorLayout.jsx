@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import NotificationBell from "../components/NotificationBell";
 
 function OperatorLayout({ title, subtitle, children }) {
   const location = useLocation();
@@ -18,16 +19,51 @@ function OperatorLayout({ title, subtitle, children }) {
 
   return (
     <div className="app">
-      <aside className="sidebar operator-sidebar">
+      <aside className="sidebar">
         <h2>TrafficPro</h2>
 
         <nav>
-          <Link className={isActive("/operator")} to="/operator">Dashboard</Link>
-          <Link className={isActive("/operator/vehicles")} to="/operator/vehicles">Véhicules</Link>
-          <Link className={isActive("/operator/traffic")} to="/operator/traffic">Trafic</Link>
-          <Link className={isActive("/operator/incidents")} to="/operator/incidents">Incidents</Link>
-          <Link className={isActive("/operator/notifications")} to="/operator/notifications">Notifications</Link>
-          <Link className={isActive("/operator/map")} to="/operator/map">Carte</Link>
+          <Link
+            className={isActive("/operator")}
+            to="/operator"
+          >
+            Dashboard
+          </Link>
+
+          <Link
+            className={isActive("/operator/vehicles")}
+            to="/operator/vehicles"
+          >
+            Véhicules
+          </Link>
+
+          <Link
+            className={isActive("/operator/traffic")}
+            to="/operator/traffic"
+          >
+            Trafic
+          </Link>
+
+          <Link
+            className={isActive("/operator/incidents")}
+            to="/operator/incidents"
+          >
+            Incidents
+          </Link>
+
+          <Link
+            className={isActive("/operator/notifications")}
+            to="/operator/notifications"
+          >
+            Notifications
+          </Link>
+
+          <Link
+            className={isActive("/operator/map")}
+            to="/operator/map"
+          >
+            Carte
+          </Link>
         </nav>
       </aside>
 
@@ -39,8 +75,13 @@ function OperatorLayout({ title, subtitle, children }) {
           </div>
 
           <div className="user-area">
-            <span>{user.name || "Operator"}</span>
-            <button onClick={logout}>Déconnexion</button>
+            <NotificationBell />
+
+            <span>{user.name || "Opérateur"}</span>
+
+            <button onClick={logout}>
+              Déconnexion
+            </button>
           </div>
         </header>
 

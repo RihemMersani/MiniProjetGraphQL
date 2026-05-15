@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import NotificationBell from "../components/NotificationBell";
 
 function Layout({ title, subtitle, children }) {
   const location = useLocation();
@@ -23,7 +24,6 @@ function Layout({ title, subtitle, children }) {
 
         <nav>
           <Link className={isActive("/")} to="/">Dashboard</Link>
-          <Link className={isActive("/users")} to="/users">Utilisateurs</Link>
           <Link className={isActive("/vehicles")} to="/vehicles">Véhicules</Link>
           <Link className={isActive("/traffic")} to="/traffic">Trafic</Link>
           <Link className={isActive("/incidents")} to="/incidents">Incidents</Link>
@@ -40,6 +40,7 @@ function Layout({ title, subtitle, children }) {
           </div>
 
           <div className="user-area">
+            <NotificationBell />
             <span>{user.name || "Admin"}</span>
             <button onClick={logout}>Déconnexion</button>
           </div>

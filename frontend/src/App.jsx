@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 import Dashboard from "./pages/admin/Dashboard";
 import Users from "./pages/admin/Users";
@@ -18,11 +19,30 @@ import OperatorIncidents from "./pages/operator/OperatorIncidents";
 import OperatorNotifications from "./pages/operator/OperatorNotifications";
 import OperatorMap from "./pages/operator/OperatorMap";
 
-function ProtectedRoute({ children }) {
-  const token = localStorage.getItem("token");
+function getCurrentUser() {
+  const savedUser = localStorage.getItem("user");
 
-  if (!token) {
+  if (!savedUser) {
+    return null;
+  }
+
+  return JSON.parse(savedUser);
+}
+
+function ProtectedRoute({ children, allowedRoles }) {
+  const token = localStorage.getItem("token");
+  const user = getCurrentUser();
+
+  if (!token || !user) {
     return <Navigate to="/login" />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    if (user.role === "ADMIN") {
+      return <Navigate to="/" />;
+    }
+
+    return <Navigate to="/operator" />;
   }
 
   return children;
@@ -34,23 +54,126 @@ function App() {
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* ADMIN */}
-        <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
-        <Route path="/vehicles" element={<ProtectedRoute><Vehicles /></ProtectedRoute>} />
-        <Route path="/traffic" element={<ProtectedRoute><Traffic /></ProtectedRoute>} />
-        <Route path="/incidents" element={<ProtectedRoute><Incidents /></ProtectedRoute>} />
-        <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
-        <Route path="/map" element={<ProtectedRoute><MapPage /></ProtectedRoute>} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/vehicles"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <Vehicles />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/traffic"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <Traffic />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/incidents"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <Incidents />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <Notifications />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/map"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <MapPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* OPERATOR */}
-        <Route path="/operator" element={<ProtectedRoute><OperatorDashboard /></ProtectedRoute>} />
-        <Route path="/operator/vehicles" element={<ProtectedRoute><OperatorVehicles /></ProtectedRoute>} />
-        <Route path="/operator/traffic" element={<ProtectedRoute><OperatorTraffic /></ProtectedRoute>} />
-        <Route path="/operator/incidents" element={<ProtectedRoute><OperatorIncidents /></ProtectedRoute>} />
-        <Route path="/operator/notifications" element={<ProtectedRoute><OperatorNotifications /></ProtectedRoute>} />
-        <Route path="/operator/map" element={<ProtectedRoute><OperatorMap /></ProtectedRoute>} />
+        <Route
+          path="/operator"
+          element={
+            <ProtectedRoute allowedRoles={["OPERATOR"]}>
+              <OperatorDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/operator/vehicles"
+          element={
+            <ProtectedRoute allowedRoles={["OPERATOR"]}>
+              <OperatorVehicles />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/operator/traffic"
+          element={
+            <ProtectedRoute allowedRoles={["OPERATOR"]}>
+              <OperatorTraffic />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/operator/incidents"
+          element={
+            <ProtectedRoute allowedRoles={["OPERATOR"]}>
+              <OperatorIncidents />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/operator/notifications"
+          element={
+            <ProtectedRoute allowedRoles={["OPERATOR"]}>
+              <OperatorNotifications />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/operator/map"
+          element={
+            <ProtectedRoute allowedRoles={["OPERATOR"]}>
+              <OperatorMap />
+            </ProtectedRoute>
+          }
+        />
 
         <Route path="*" element={<Navigate to="/home" />} />
       </Routes>

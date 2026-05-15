@@ -68,14 +68,20 @@ const resolvers = {
       });
     },
 
-    notifications: async () => {
-      return new Promise((resolve, reject) => {
-        db.query("SELECT * FROM notifications", (error, results) => {
-          if (error) reject(error);
-          else resolve(results);
-        });
-      });
-    },
+    notifications: async (_, args, context) => {
+  if (!context.user) {
+    throw new Error("Non authentifié");
+  }
+
+  return new Promise((resolve, reject) => {
+    const sql = "SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC";
+
+    db.query(sql, [context.user.id], (error, results) => {
+      if (error) reject(error);
+      else resolve(results);
+    });
+  });
+},
   },
 
   Mutation: {
@@ -227,22 +233,42 @@ const resolvers = {
         });
       });
     },
+addNotification: async (_, args, context) => {
+  if (!context.user || context.user.role !== "ADMIN") {
+    throw new Error("Accès refusé : admin seulement");
+  }
 
-    addNotification: async (_, args) => {
-      const { user_id, message } = args;
+  const { user_id, message } = args;
 
-      return new Promise((resolve, reject) => {
-        const sql = `
-          INSERT INTO notifications(user_id, message)
-          VALUES (?, ?)
-        `;
+  return new Promise((resolve, reject) => {
+    const sql = `
+      INSERT INTO notifications(user_id, message)
+      VALUES (?, ?)
+    `;
 
-        db.query(sql, [user_id, message], (error) => {
-          if (error) reject(error);
-          else resolve("Notification envoyée");
+    db.query(sql, [user_id, message], (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        const notification = {
+          id: result.insertId,
+          user_id,
+          message,
+          is_read: false,
+          created_at: new Date().toISOString(),
+        };
+
+        context.io.to(`user_${user_id}`).emit("notification", {
+          title: "Nouvelle notification",
+          message,
+          notification,
         });
-      });
-    },
+
+        resolve("Notification envoyée à l'utilisateur");
+      }
+    });
+  });
+},
 
     markNotificationAsRead: async (_, args) => {
       return new Promise((resolve, reject) => {

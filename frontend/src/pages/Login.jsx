@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { gql } from "@apollo/client";
 import { useMutation } from "@apollo/client/react";
-import { useNavigate } from "react-router-dom";
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
@@ -20,12 +20,14 @@ const LOGIN = gql`
 function Login() {
   const navigate = useNavigate();
 
+  const [login, { loading }] = useMutation(LOGIN);
+
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
-  const [login, { loading, error }] = useMutation(LOGIN);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setForm({
@@ -37,23 +39,29 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const result = await login({
-      variables: {
-        email: form.email,
-        password: form.password,
-      },
-    });
+    setError("");
 
-    const token = result.data.login.token;
-    const user = result.data.login.user;
+    try {
+      const result = await login({
+        variables: {
+          email: form.email,
+          password: form.password,
+        },
+      });
 
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+      const token = result.data.login.token;
+      const user = result.data.login.user;
 
-    if (user.role === "ADMIN") {
-      navigate("/");
-    } else {
-      navigate("/operator");
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      if (user.role === "ADMIN") {
+        navigate("/");
+      } else {
+        navigate("/operator");
+      }
+    } catch (err) {
+      setError("Email ou mot de passe incorrect");
     }
   };
 
@@ -81,11 +89,16 @@ function Login() {
           required
         />
 
-        {error && <span className="login-error">Email ou mot de passe incorrect</span>}
+        {error && <span className="login-error">{error}</span>}
 
         <button type="submit" disabled={loading}>
           {loading ? "Connexion..." : "Se connecter"}
         </button>
+
+        <div className="auth-switch">
+          <span>Vous n'avez pas de compte ?</span>
+          <Link to="/register">S'inscrire</Link>
+        </div>
       </form>
     </div>
   );
