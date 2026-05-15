@@ -20,10 +20,10 @@ function Layout({ title, subtitle, children }) {
   return (
     <div className="app">
       <aside className="sidebar">
-        <h2>TrafficPro</h2>
+        <Link to="/"><h2>TrafficPro</h2></Link>
 
         <nav>
-          <Link className={isActive("/")} to="/">Dashboard</Link>
+          <Link className={isActive("/dashboard")} to="/dashboard">Dashboard</Link>
           <Link className={isActive("/vehicles")} to="/vehicles">Véhicules</Link>
           <Link className={isActive("/traffic")} to="/traffic">Trafic</Link>
           <Link className={isActive("/incidents")} to="/incidents">Incidents</Link>

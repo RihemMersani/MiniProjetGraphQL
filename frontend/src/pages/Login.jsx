@@ -56,7 +56,7 @@ function Login() {
       localStorage.setItem("user", JSON.stringify(user));
 
       if (user.role === "ADMIN") {
-        navigate("/");
+        navigate("/dashboard");
       } else {
         navigate("/operator");
       }
